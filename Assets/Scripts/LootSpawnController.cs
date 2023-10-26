@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +13,17 @@ public class LootSpawnController : MonoBehaviour
     public void Activate() {
         if (_looted) return;
 
-        // TODO spawn according to loot table
+        // spawn according to loot table
         if (_instance is null) {
             _instance = Instantiate(pickupableHolderTemplate);
             _instance.transform.SetParent(transform);
             _instance.transform.localPosition = new(0, 0, _instance.transform.localPosition.z);
-            _instance.GetComponent<PickupableController>().Item = _randomItem();
+            var item = _randomItem();
+            if (item == null) {
+                _looted = true;
+                return;
+            }
+            _instance.GetComponent<PickupableController>().Item = item;
         }
 
         _instance.SetActive(true);
@@ -31,8 +35,26 @@ public class LootSpawnController : MonoBehaviour
         _instance.SetActive(false);
     }
 
-    private Pickupable _randomItem() {
-        return lootTable.probabilityMap[0].item;
+    private Pickupable? _randomItem() {
+        var count = lootTable.chanceForNothing;
+        foreach (var pair in lootTable.probabilityMap)
+            count += pair.chance;
+        var v = Random.Range(0, count + 1);
+        if (v <= lootTable.chanceForNothing) {
+            return null;
+        }
+        v -= lootTable.chanceForNothing;
+        foreach (var pair in lootTable.probabilityMap) {
+            if (v > pair.chance) {
+                v -= pair.chance;
+                continue;
+            }
+
+            return pair.item;
+        }
+
+        // TODO should happen, just in case
+        return null;
     }
 
     public void Loot() {

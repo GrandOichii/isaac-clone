@@ -95,7 +95,6 @@ public class FloorController : MonoBehaviour
 
         _generateRoomData();
 
-        // TODO
         // load prefab variant
         layout.GetComponent<LayoutController>().Load(_rData[_pY, _pX]);
     }
