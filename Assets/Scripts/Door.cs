@@ -34,10 +34,9 @@ public class Door : MonoBehaviour
             // if open, disable wall collider and enable open wall sprite
             // if locked, enable wall collider and locked sprite
 
-            wallCollider.enabled = _state == DoorState.WALL;
-            wallTexture.enabled = wallCollider.enabled;
-
-
+            var isWall = _state == DoorState.WALL;
+            wallCollider.enabled = isWall;
+            wallTexture.enabled = isWall;
         }
     }
 

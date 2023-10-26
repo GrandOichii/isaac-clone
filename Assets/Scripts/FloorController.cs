@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class FloorController : MonoBehaviour
 {
+    private static Dictionary<DoorDir, Vector2> _dirMap = new() {
+        {DoorDir.NORTH, new Vector2(0, 1)},
+        {DoorDir.SOUTH, new Vector2(0, -1)},
+        {DoorDir.WEST, new Vector2(-1, 0)},
+        {DoorDir.EAST, new Vector2(1, 0)},
+    };
+
     public float roomSizeX = 18.45f;
     public float roomSizeY = 10f;
 
@@ -24,21 +31,42 @@ public class FloorController : MonoBehaviour
     }
 
     private List<Door> _doorControllers;
+    private FloorTemplate _template;
+    private int _pX;
+    private int _pY;
 
     void Start()
     {
-        _generateFloor();
-
         _doorControllers = new();
         foreach (var door in doors)
             _doorControllers.Add(door.GetComponent<Door>());
 
-        ShuffleStates();
+        _generateFloor();
+        _loadCurrentRoom();
     }
 
     void _generateFloor() {
-        var template = new FloorTemplate(".###!\n..@..\n..#..\n.$#*.\n..#..");
-        
+        _template = new FloorTemplate(".###!\n..@..\n..#..\n.$#*.\n..#..");
+        _pX = _template.SpawnX;
+        _pY = _template.SpawnY;
+    }
+
+    void _loadCurrentRoom() {
+        var room = preloadedRooms[(PreloadI + 1) % preloadedRooms.Count];
+        foreach (var d in doors) {
+            var door = d.GetComponent<Door>();
+            door.State = DoorState.WALL;
+            var diff = _diffFromDir(door.doorDirection);
+            var newPos = new Vector2(_pY - diff[1], _pX + diff[0]);
+            if (newPos[0] >= _template.Height || newPos[1] >= _template.Width || newPos[0] < 0 || newPos[1] < 0) {
+                continue;
+            }
+            var next = _template.Rooms[(int)newPos[0], (int)newPos[1]];
+            if (next is null) {
+                continue;
+            }
+            door.State = DoorState.OPEN;
+        }
     }
 
     void ShuffleStates() {
@@ -49,20 +77,7 @@ public class FloorController : MonoBehaviour
 
     }
 
-    private static Dictionary<DoorDir, Vector2> _dirMap = new() {
-        {DoorDir.NORTH, new Vector2(0, 1)},
-        {DoorDir.SOUTH, new Vector2(0, -1)},
-        {DoorDir.WEST, new Vector2(-1, 0)},
-        {DoorDir.EAST, new Vector2(1, 0)},
-    };
-
     private static Vector2 _diffFromDir(DoorDir dir) => _dirMap[dir];
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void SetDoorTriggersEnabled(bool v) {
         foreach (var dr in _doorControllers)
@@ -71,12 +86,17 @@ public class FloorController : MonoBehaviour
 
     public void OnPlayerDoorInteract(DoorDir dir) {
         var t = Camera.main.transform;
-        var newPos = new Vector2(t.position.x, t.position.y) + _diffFromDir(dir) * new Vector2(roomSizeX, roomSizeY);
+        var diff = _diffFromDir(dir);
+        var newPos = new Vector2(t.position.x, t.position.y) + diff * new Vector2(roomSizeX, roomSizeY);
         var target = new Vector3(newPos.x, newPos.y, t.position.z);
 
-        doorsContainer.transform.position = target;
+        doorsContainer.transform.position = newPos;
         player.transform.position = preloadedRooms[PreloadI].GetComponent<RoomController>().GetSpawnLocation(dir);
-        
+
+        _pX += (int)diff[0];
+        _pY -= (int)diff[1];
+        _loadCurrentRoom();
+
         LeanTween.move(Camera.main.gameObject, target, .1f);
         ++PreloadI;
     }
