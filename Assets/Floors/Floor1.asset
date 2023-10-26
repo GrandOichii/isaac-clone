@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Floor1
   roomLayouts:
-  - {fileID: 7514256876412066898, guid: ae33d02efb50fee4a95e22c3ad40e94e, type: 3}
-  - {fileID: 4259315916575139398, guid: 5db85f49ffc94214c9ecf6438dc4dddf, type: 3}
+  - room: {fileID: 7514256876412066898, guid: ae33d02efb50fee4a95e22c3ad40e94e, type: 3}
+    chance: 0
+  - room: {fileID: 4259315916575139398, guid: 5db85f49ffc94214c9ecf6438dc4dddf, type: 3}
+    chance: 10

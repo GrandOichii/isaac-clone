@@ -69,11 +69,11 @@ public class FloorController : MonoBehaviour
             return;
         }
 
-        var layoutI = Random.Range(0, floorData.roomLayouts.Count);
-        if (isSpawn) layoutI = 0;
+        var room = floorData.RandomRoom();
+        // use first if is spawn room
+        if (isSpawn) room = floorData.roomLayouts[0].room; 
 
-        // TODO use the template
-        _rData[_pY, _pX] = new RoomData(floorData.roomLayouts[layoutI]);
+        _rData[_pY, _pX] = new RoomData(room);
     }
 
     void _loadCurrentRoom() {

@@ -12,6 +12,6 @@ public class Drop {
 [CreateAssetMenu(fileName = "Loot table")]
 public class LootTable : ScriptableObject
 {
-    public float chanceForNothing;
+    public int chanceForNothing;
     public List<Drop> probabilityMap;
 }

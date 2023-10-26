@@ -39,7 +39,7 @@ public class LootSpawnController : MonoBehaviour
         var count = lootTable.chanceForNothing;
         foreach (var pair in lootTable.probabilityMap)
             count += pair.chance;
-        var v = Random.Range(0, count + 1);
+        var v = Random.Range(1, count + 1);
         if (v <= lootTable.chanceForNothing) {
             return null;
         }
@@ -53,7 +53,7 @@ public class LootSpawnController : MonoBehaviour
             return pair.item;
         }
 
-        // TODO should happen, just in case
+        // TODO shouldn't happen, just in case
         return null;
     }
 

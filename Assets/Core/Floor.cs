@@ -93,8 +93,31 @@ public class FloorTemplate
     }
 }
 
+[System.Serializable]
+public class RoomChance {
+    public GameObject room;
+    public int chance; 
+}
+
 [CreateAssetMenu(fileName = "Floor")]
 public class Floor : ScriptableObject {
     public new string name;
-    public List<GameObject> roomLayouts;
+    public List<RoomChance> roomLayouts;
+
+    public GameObject RandomRoom() {
+        var count = 0;
+        foreach (var pair in roomLayouts)
+            count += pair.chance;
+        var v = Random.Range(1, count + 1);
+        foreach (var pair in roomLayouts) {
+            if (v > pair.chance) {
+                v -= pair.chance;
+                continue;
+            }
+
+            return pair.room;
+        }
+
+        return null;
+    }
 }

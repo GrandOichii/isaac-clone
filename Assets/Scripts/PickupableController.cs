@@ -21,6 +21,9 @@ public class PickupableController : MonoBehaviour
     }
 
     public void Pickup(PlayerMovement player) {
+        // TODO fix? should even happen, the object is not active
+        if (Item == null) return;
+
         Item.OnPickup(player);
         transform.parent.GetComponent<LootSpawnController>().Loot();
     }
