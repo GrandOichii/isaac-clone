@@ -57,6 +57,14 @@ public class PlayerMovement : MonoBehaviour
             PreloadRoomInteract.Invoke(collider.gameObject.transform.parent.gameObject.GetComponent<Door>().doorDirection);
             return;
         }
+        if (collider.gameObject.CompareTag("pickup")) {
+            _pickup(collider);
+        }
         // transform.position = Camera.main.transform.position;
+    }
+
+    private void _pickup(Collider2D collider) {
+        var pController = collider.GetComponent<PickupableController>();
+        pController.Pickup();
     }
 }

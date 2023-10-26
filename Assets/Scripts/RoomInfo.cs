@@ -6,16 +6,6 @@ public class RoomInfo : MonoBehaviour
 {
     public string roomName;
 
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject pickupableSpawnsContainer;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

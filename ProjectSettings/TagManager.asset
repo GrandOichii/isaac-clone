@@ -6,6 +6,7 @@ TagManager:
   tags:
   - doors
   - preload-room
+  - pickup
   layers:
   - Default
   - TransparentFX
