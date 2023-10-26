@@ -93,6 +93,8 @@ public class FloorTemplate
     }
 }
 
-public class Floor {
-    
+[CreateAssetMenu(fileName = "Floor")]
+public class Floor : ScriptableObject {
+    public new string name;
+    public List<GameObject> roomLayouts;
 }

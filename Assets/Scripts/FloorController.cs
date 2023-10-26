@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class RoomData {
+    public GameObject RoomTemplate { get; }
+    public RoomData(GameObject roomTemplate) {
+        RoomTemplate = roomTemplate;
+    }   
+}
+
 public class FloorController : MonoBehaviour
 {
     private static Dictionary<DoorDir, Vector2> _dirMap = new() {
@@ -11,6 +18,8 @@ public class FloorController : MonoBehaviour
         {DoorDir.EAST, new Vector2(1, 0)},
     };
 
+    public GameObject layout;
+    public Floor floorData;
     public float roomSizeX = 18.45f;
     public float roomSizeY = 10f;
 
@@ -35,6 +44,8 @@ public class FloorController : MonoBehaviour
     private int _pX;
     private int _pY;
 
+    private RoomData?[,] _rData;    
+
     void Start()
     {
         _doorControllers = new();
@@ -42,6 +53,8 @@ public class FloorController : MonoBehaviour
             _doorControllers.Add(door.GetComponent<Door>());
 
         _generateFloor();
+        _rData = new RoomData?[_template.Height, _template.Width];
+        _generateRoomData(true);
         _loadCurrentRoom();
     }
 
@@ -51,8 +64,20 @@ public class FloorController : MonoBehaviour
         _pY = _template.SpawnY;
     }
 
+    void _generateRoomData(bool isSpawn=false) {
+        if (_rData[_pY, _pX] is not null) {
+            return;
+        }
+
+        var layoutI = Random.Range(0, floorData.roomLayouts.Count);
+        if (isSpawn) layoutI = 0;
+
+        // TODO use the template
+        _rData[_pY, _pX] = new RoomData(floorData.roomLayouts[layoutI]);
+    }
+
     void _loadCurrentRoom() {
-        var room = preloadedRooms[(PreloadI + 1) % preloadedRooms.Count];
+        // load doors
         foreach (var d in doors) {
             var door = d.GetComponent<Door>();
             door.State = DoorState.WALL;
@@ -67,14 +92,12 @@ public class FloorController : MonoBehaviour
             }
             door.State = DoorState.OPEN;
         }
-    }
 
-    void ShuffleStates() {
-        foreach (var dc in _doorControllers) {
-            var state = (DoorState)Random.Range(1, 2);
-            dc.State = state;
-        }
+        _generateRoomData();
 
+        // TODO
+        // load prefab variant
+        layout.GetComponent<LayoutController>().Load(_rData[_pY, _pX]);
     }
 
     private static Vector2 _diffFromDir(DoorDir dir) => _dirMap[dir];
