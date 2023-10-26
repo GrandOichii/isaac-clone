@@ -4,8 +4,8 @@ using UnityEngine;
 public class CoinData : Pickupable {
     public int amount;
 
-    public override void OnPickup()
+    public override void OnPickup(PlayerMovement player)
     {
-        // TODO do stuff
+        player.Coins += amount;
     }
 }

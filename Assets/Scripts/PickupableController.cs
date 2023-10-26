@@ -20,8 +20,8 @@ public class PickupableController : MonoBehaviour
         _sprite = GetComponent<SpriteRenderer>();
     }
 
-    public void Pickup() {
-        Item.OnPickup();
+    public void Pickup(PlayerMovement player) {
+        Item.OnPickup(player);
         transform.parent.GetComponent<LootSpawnController>().Loot();
     }
 }

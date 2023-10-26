@@ -7,6 +7,9 @@ using UnityEngine.Events;
 [Serializable]
 public class DoorInteractEvent : UnityEvent<DoorDir> {}
 
+[Serializable]
+public class NumberedStatChanged : UnityEvent<string, int> {}
+
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed;
@@ -16,15 +19,22 @@ public class PlayerMovement : MonoBehaviour
 
     public DoorInteractEvent OnDoorInteract;
     public DoorInteractEvent PreloadRoomInteract;
+    public NumberedStatChanged NumberedStatChanged;
+
+    private int _coins;
+    public int Coins {
+        get => _coins;
+        set {
+            _coins = value;
+            if (_coins < 0) _coins = 0;
+            NumberedStatChanged.Invoke("coins", _coins);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        // for (int i = 0; i < 20; i++) {
-        //     var floor = FloorTemplate.Generate(5, 5);
-        //     print(floor.ToString());
-        // }
-        // var floor =         // print(floor);
+        Coins = 0;
     }
 
     void Update() {
@@ -65,6 +75,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void _pickup(Collider2D collider) {
         var pController = collider.GetComponent<PickupableController>();
-        pController.Pickup();
+        pController.Pickup(this);
     }
 }
