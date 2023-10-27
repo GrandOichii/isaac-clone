@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0aff873cdd538643bd9da2cccc595b5, type: 3}
-  m_Name: Basic
+  m_Script: {fileID: 11500000, guid: 0ac22fb37e3fdda429a596f6b525bfd3, type: 3}
+  m_Name: Coin5
   m_EditorClassIdentifier: 
-  chanceForNothing: 10
-  probabilityMap:
-  - item: {fileID: 11400000, guid: 6c8d98ee6f0c0e943a0ebfbe46b41cb6, type: 2}
-    chance: 10
+  sprite: {fileID: 21300000, guid: 0ecd9b4d0531a5c40b534634ceeac4aa, type: 3}
+  amount: 5
