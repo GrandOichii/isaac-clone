@@ -16,3 +16,5 @@ MonoBehaviour:
   probabilityMap:
   - item: {fileID: 11400000, guid: 6c8d98ee6f0c0e943a0ebfbe46b41cb6, type: 2}
     chance: 10
+  - item: {fileID: 11400000, guid: 93c95d5709ef7494ba75381cfb71b6d3, type: 2}
+    chance: 3
